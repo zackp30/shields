@@ -300,13 +300,15 @@ cache(function(data, match, sendBadge, request) {
   var badgeData = getBadgeData('build', data);
   request(options, function(err, res) {
     if (err != null) {
+      console.error('Travis error: ' + err.stack + '\n' +
+        JSON.stringify(res.headers));
       badgeData.text[1] = 'invalid';
       sendBadge(format, badgeData);
       return;
     }
     try {
       var res = res.headers['content-disposition']
-                     .match(/filename="(.+)\.svg"/)[1];
+                   .match(/filename="(.+)\.svg"/)[1];
       badgeData.text[1] = res;
       if (res === 'passing') {
         badgeData.colorscheme = 'brightgreen';
